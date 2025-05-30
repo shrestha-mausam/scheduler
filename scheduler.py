@@ -3,6 +3,7 @@ from typing import List, Dict, Set
 from dataclasses import dataclass
 from enum import Enum
 import csv
+import os
 
 class Shift(Enum):
     MORNING = "Morning"
@@ -19,6 +20,16 @@ class Shift(Enum):
             'N': cls.NO_SHIFT
         }
         return code_map.get(code.upper(), cls.NO_SHIFT)
+
+    @classmethod
+    def to_code(cls, shift: 'Shift') -> str:
+        code_map = {
+            cls.MORNING: 'M',
+            cls.AFTERNOON: 'A',
+            cls.EVENING: 'E',
+            cls.NO_SHIFT: 'N'
+        }
+        return code_map.get(shift, 'N')
 
 @dataclass
 class Employee:
@@ -42,6 +53,10 @@ class Scheduler:
 
     def load_from_csv(self, filename: str):
         """Load employee preferences from a CSV file."""
+        if not os.path.exists(filename):
+            print(f"Error: File {filename} does not exist.")
+            return False
+
         with open(filename, 'r') as file:
             reader = csv.reader(file)
             next(reader)  # Skip header
@@ -60,6 +75,48 @@ class Scheduler:
                         preferred_shifts[day] = [shift]
                 
                 self.add_employee(name, preferred_shifts)
+        return True
+
+    def add_employee_manually(self):
+        """Add an employee by manually entering their preferences."""
+        name = input("\nEnter employee name: ").strip()
+        if not name:
+            print("Error: Name cannot be empty.")
+            return False
+
+        preferred_shifts = {}
+        print("\nEnter shift preferences for each day (M=Morning, A=Afternoon, E=Evening, N=No Shift):")
+        
+        for day in self.days:
+            while True:
+                shift_code = input(f"{day} (M/A/E/N): ").strip().upper()
+                if shift_code in ['M', 'A', 'E', 'N']:
+                    shift = Shift.from_code(shift_code)
+                    if shift != Shift.NO_SHIFT:
+                        preferred_shifts[day] = [shift]
+                    break
+                else:
+                    print("Invalid input. Please enter M, A, E, or N.")
+
+        self.add_employee(name, preferred_shifts)
+        return True
+
+    def save_to_csv(self, filename: str):
+        """Save current employee preferences to a CSV file."""
+        with open(filename, 'w', newline='') as file:
+            writer = csv.writer(file)
+            # Write header
+            writer.writerow(['Name'] + self.days)
+            
+            # Write employee data
+            for emp in self.employees:
+                row = [emp.name]
+                for day in self.days:
+                    if day in emp.preferred_shifts and emp.preferred_shifts[day]:
+                        row.append(Shift.to_code(emp.preferred_shifts[day][0]))
+                    else:
+                        row.append('N')
+                writer.writerow(row)
 
     def add_employee(self, name: str, preferred_shifts: Dict[str, List[Shift]]):
         """Add an employee with their preferred shifts."""
@@ -131,15 +188,47 @@ class Scheduler:
                 print(f"{shift.value}: {', '.join(employees) if employees else 'No assignments'}")
 
 def main():
-    # Create a scheduler instance
     scheduler = Scheduler()
     
-    # Load employee preferences from CSV file
-    scheduler.load_from_csv('employee_schedule.csv')
-    
+    while True:
+        print("\nEmployee Schedule Manager")
+        print("1. Import schedule from CSV file")
+        print("2. Enter employee preferences manually")
+        print("3. Exit")
+        
+        choice = input("\nEnter your choice (1-3): ").strip()
+        
+        if choice == "1":
+            filename = input("Enter CSV filename (default: employee_schedule.csv): ").strip()
+            if not filename:
+                filename = "employee_schedule.csv"
+            if scheduler.load_from_csv(filename):
+                break
+        elif choice == "2":
+            while True:
+                if scheduler.add_employee_manually():
+                    add_more = input("\nAdd another employee? (y/n): ").strip().lower()
+                    if add_more != 'y':
+                        break
+            break
+        elif choice == "3":
+            print("Exiting program.")
+            return
+        else:
+            print("Invalid choice. Please try again.")
+
     # Generate and print the schedule
     scheduler.generate_schedule()
     scheduler.print_schedule()
+
+    # Ask if user wants to save the schedule
+    save_choice = input("\nDo you want to save the schedule to a CSV file? (y/n): ").strip().lower()
+    if save_choice == 'y':
+        filename = input("Enter filename to save (default: employee_schedule.csv): ").strip()
+        if not filename:
+            filename = "employee_schedule.csv"
+        scheduler.save_to_csv(filename)
+        print(f"Schedule saved to {filename}")
 
 if __name__ == "__main__":
     main() 

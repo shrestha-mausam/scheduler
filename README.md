@@ -1,72 +1,72 @@
 # Employee Schedule Manager
 
-This application manages employee schedules for a company that operates 7 days a week with morning, afternoon, and evening shifts.
+A scheduling application that manages employee shifts for a 7-day operation. The application allows employees to select their preferred shifts and generates a schedule that meets various requirements.
 
 ## Features
 
-- Input and storage of employee names and preferred shifts
-- Automatic shift assignment with conflict resolution
-- Ensures minimum coverage (2 employees per shift)
-- Maximum 5 days per week per employee
-- No more than one shift per day per employee
-- Random assignment for unfilled shifts
-- CSV file input support for employee preferences
+- Interactive command-line interface
+- Import employee preferences from CSV file
+- Manual entry of employee preferences
+- Automatic schedule generation with conflict resolution
+- Minimum coverage of two employees per shift
+- Maximum of one shift per day per employee
+- Maximum of five days per week per employee
+- Export generated schedule to CSV file
 
 ## Input Format
 
-The application reads employee preferences from a CSV file with the following format:
+The application accepts employee preferences in two ways:
 
-```
-Name,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday
-Employee1,N,N,M,A,E,N,N
-Employee2,M,A,N,E,M,N,N
-```
+1. CSV File Import:
+   - File format: `employee_schedule.csv`
+   - No header required
+   - Each row represents one employee
+   - Columns: Name, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+   - Shift codes: M (Morning), A (Afternoon), E (Evening), N (No Shift)
 
-Where:
-- First row is the header (will be skipped)
-- Each subsequent row represents one employee
-- Shift codes:
-  - M = Morning Shift
-  - A = Afternoon Shift
-  - E = Evening Shift
-  - N = No Shift (Not Available)
+2. Manual Entry:
+   - Interactive prompts for employee name and shift preferences
+   - Validates input for each day
+   - Allows adding multiple employees
 
 ## Implementation
 
-The application is implemented in both Python and C++:
+The application is implemented in both Python and C++.
 
-### Python Version
+### Python Implementation
 
-To run the Python version:
 ```bash
+# Run the Python version
 python scheduler.py
 ```
 
-### C++ Version
+### C++ Implementation
 
-To compile and run the C++ version:
 ```bash
-g++ -std=c++17 scheduler.cpp -o scheduler
+# Compile the C++ version
+g++ -std=c++11 scheduler.cpp -o scheduler
+
+# Run the C++ version
 ./scheduler
 ```
 
 ## Usage
 
-Both implementations provide the same functionality:
+1. Start the application
+2. Choose from the menu:
+   - Import schedule from CSV file
+   - Enter employee preferences manually
+   - Exit program
+3. If importing from CSV:
+   - Enter the filename (default: employee_schedule.csv)
+4. If entering manually:
+   - Enter employee name
+   - For each day, enter shift preference (M/A/E/N)
+   - Choose to add more employees or proceed
+5. The application will generate and display the schedule
+6. Option to save the generated schedule to a CSV file
 
-1. Create a CSV file named `employee_schedule.csv` with employee preferences
-2. Place the CSV file in the same directory as the program
-3. Run the program
-4. The scheduler will:
-   - Read employee preferences from the CSV file
-   - Generate a schedule based on the preferences
-   - Ensure minimum coverage (2 employees per shift)
-   - Handle conflicts and random assignments when needed
-   - Print the final schedule
-
-## Example
-
-The repository includes a sample `employee_schedule.csv` file with example data:
+## Example CSV File
 
 ```
 Name,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday
@@ -78,19 +78,21 @@ David,E,N,N,M,A,N,N
 Emma,N,E,A,N,M,N,N
 ```
 
-The scheduler will:
-1. Read these preferences from the CSV file
-2. Try to assign preferred shifts first
-3. Ensure minimum coverage (2 employees per shift)
-4. Resolve conflicts by randomly assigning available employees
-5. Print the final schedule in a readable format
-
 ## Requirements
 
 ### Python Version
 - Python 3.6 or higher
-- No external dependencies required
+- Standard library modules: random, typing, dataclasses, enum, csv, os
 
 ### C++ Version
-- C++17 compatible compiler
-- Standard library support
+- C++11 or higher
+- Standard library headers: iostream, vector, string, map, set, random, algorithm, memory, fstream, sstream, limits
+
+## Notes
+
+- The application ensures at least two employees per shift
+- Employees cannot work more than one shift per day
+- Employees cannot work more than five days per week
+- The schedule is generated randomly when multiple valid options exist
+- The application handles input validation and error cases
+- Generated schedules can be saved to a new CSV file
