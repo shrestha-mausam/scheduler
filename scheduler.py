@@ -51,31 +51,97 @@ class Scheduler:
             day: {shift: [] for shift in self.shifts} for day in self.days
         }
 
+    def validate_csv_format(self, filename: str) -> tuple[bool, str]:
+        """Validate the CSV file format before processing."""
+        if not os.path.exists(filename):
+            return False, f"Error: File {filename} does not exist."
+
+        try:
+            with open(filename, 'r') as file:
+                reader = csv.reader(file)
+                header = next(reader, None)
+                
+                # Check if file is empty
+                if header is None:
+                    return False, "Error: The input CSV file cannot be used because it is empty. Please provide a file with employee schedule data."
+
+                # Validate header
+                if len(header) != 8:
+                    return False, f"Error: The input CSV file cannot be used because it does not follow the required format.\n" \
+                                f"First error encountered: Invalid header format.\n" \
+                                f"Expected 8 columns (Name + 7 days of the week), but found {len(header)} columns.\n" \
+                                f"Please ensure your CSV file has the following columns: Name, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday."
+                
+                if header[0] != "Name":
+                    return False, f"Error: The input CSV file cannot be used because it does not follow the required format.\n" \
+                                f"First error encountered: Invalid first column name.\n" \
+                                f"Expected 'Name' as the first column, but found '{header[0]}'.\n" \
+                                f"Please ensure your CSV file starts with a 'Name' column."
+                
+                # Validate day columns
+                for i, day in enumerate(self.days, 1):
+                    if i >= len(header) or header[i] != day:
+                        return False, f"Error: The input CSV file cannot be used because it does not follow the required format.\n" \
+                                    f"First error encountered: Invalid column {i}.\n" \
+                                    f"Expected '{day}', but found '{header[i] if i < len(header) else 'missing'}'.\n" \
+                                    f"Please ensure your CSV file has the following columns in order: Name, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday."
+
+                # Validate each row
+                for row_num, row in enumerate(reader, 2):  # Start from 2 because we already read the header
+                    if len(row) != 8:
+                        return False, f"Error: The input CSV file cannot be used because it does not follow the required format.\n" \
+                                    f"First error encountered: Invalid number of columns in row {row_num}.\n" \
+                                    f"Expected 8 columns, but found {len(row)} columns.\n" \
+                                    f"Please ensure each row has values for Name and all 7 days of the week."
+                    
+                    # Check for empty name
+                    if not row[0].strip():
+                        return False, f"Error: The input CSV file cannot be used because it does not follow the required format.\n" \
+                                    f"First error encountered: Empty employee name in row {row_num}.\n" \
+                                    f"Please ensure all employees have a name."
+                    
+                    # Validate shift codes
+                    for i, shift_code in enumerate(row[1:], 1):
+                        shift_code = shift_code.strip().upper()  # Trim whitespace and convert to uppercase
+                        if shift_code not in ['M', 'A', 'E', 'N']:
+                            return False, f"Error: The input CSV file cannot be used because it does not follow the required format.\n" \
+                                        f"First error encountered: Invalid shift code in row {row_num}, column {i+1}.\n" \
+                                        f"Found '{row[i]}', but only M (Morning), A (Afternoon), E (Evening), or N (No Shift) are allowed."
+
+            return True, "CSV format is valid."
+
+        except Exception as e:
+            return False, f"Error: The input CSV file cannot be used because it does not follow the required format.\n" \
+                         f"First error encountered: {str(e)}\n" \
+                         f"Please ensure your file is a valid CSV file with the correct format."
+
     def load_from_csv(self, filename: str):
         """Load employee preferences from a CSV file."""
-        if not os.path.exists(filename):
-            print(f"Error: File {filename} does not exist.")
+        # First validate the CSV format
+        is_valid, error_message = self.validate_csv_format(filename)
+        if not is_valid:
+            print(error_message)
             return False
 
-        with open(filename, 'r') as file:
-            reader = csv.reader(file)
-            next(reader)  # Skip header
-            for row in reader:
-                if len(row) != 8:  # Name + 7 days
-                    print(f"Warning: Invalid row format: {row}")
-                    continue
-                
-                name = row[0]
-                preferred_shifts = {}
-                
-                for i, shift_code in enumerate(row[1:], 1):
-                    day = self.days[i-1]
-                    shift = Shift.from_code(shift_code)
-                    if shift != Shift.NO_SHIFT:
-                        preferred_shifts[day] = [shift]
-                
-                self.add_employee(name, preferred_shifts)
-        return True
+        try:
+            with open(filename, 'r') as file:
+                reader = csv.reader(file)
+                next(reader)  # Skip header
+                for row in reader:
+                    name = row[0]
+                    preferred_shifts = {}
+                    
+                    for i, shift_code in enumerate(row[1:], 1):
+                        day = self.days[i-1]
+                        shift = Shift.from_code(shift_code)
+                        if shift != Shift.NO_SHIFT:
+                            preferred_shifts[day] = [shift]
+                    
+                    self.add_employee(name, preferred_shifts)
+            return True
+        except Exception as e:
+            print(f"Error processing CSV file: {str(e)}")
+            return False
 
     def add_employee_manually(self):
         """Add an employee by manually entering their preferences."""

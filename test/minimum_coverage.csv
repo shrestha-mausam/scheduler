@@ -1,0 +1,13 @@
+Name,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday
+John,M,N,N,N,N,N,N
+Alice,M,N,N,N,N,N,N
+Bob,N,A,N,N,N,N,N
+Carol,N,A,N,N,N,N,N
+David,N,N,E,N,N,N,N
+Emma,N,N,E,N,N,N,N
+Frank,N,N,N,M,N,N,N
+Grace,N,N,N,M,N,N,N
+Henry,N,N,N,N,N,E,N
+Ivy,N,N,N,N,N,E,N
+Jack,N,N,N,N,N,N,A
+Kelly,N,N,N,N,N,N,A 

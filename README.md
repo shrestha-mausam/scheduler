@@ -66,6 +66,51 @@ g++ -std=c++11 scheduler.cpp -o scheduler
 5. The application will generate and display the schedule
 6. Option to save the generated schedule to a CSV file
 
+## Test Cases
+
+The `test` directory contains various test CSV files to validate the scheduler's functionality:
+
+1. `all_shifts_assigned.csv`
+   - All shifts are assigned with more than 2 employees per shift
+   - Tests maximum capacity handling
+
+2. `some_shifts_unassigned.csv`
+   - Some shifts are not assigned
+   - Tests conflict resolution and random assignment
+
+3. `invalid_format.csv`
+   - Contains missing columns and invalid rows
+   - Tests error handling for malformed input
+
+4. `invalid_shift_codes.csv`
+   - Contains invalid shift codes (X, Y, Z)
+   - Tests input validation
+
+5. `empty_names.csv`
+   - Contains rows with empty employee names
+   - Tests name validation
+
+6. `max_work_days.csv`
+   - Employees assigned to 6 days
+   - Tests the 5-day maximum constraint
+
+7. `minimum_coverage.csv`
+   - Each shift has exactly 2 employees
+   - Tests minimum coverage requirement
+
+To run tests:
+```bash
+# Python version
+python scheduler.py
+# When prompted, enter the path to the test file
+# Example: test/all_shifts_assigned.csv
+
+# C++ version
+./scheduler
+# When prompted, enter the path to the test file
+# Example: test/all_shifts_assigned.csv
+```
+
 ## Example CSV File
 
 ```
@@ -96,3 +141,4 @@ Emma,N,E,A,N,M,N,N
 - The schedule is generated randomly when multiple valid options exist
 - The application handles input validation and error cases
 - Generated schedules can be saved to a new CSV file
+- Test cases are provided to validate various scenarios and edge cases
