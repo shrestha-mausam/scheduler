@@ -139,7 +139,7 @@ Emma,N,E,A,N,M,N,N
 - Standard library modules: random, typing, dataclasses, enum, csv, os
 
 ### C++ Version
-- C++11 or higher
+- C++17 or higher
 - Standard library headers: iostream, vector, string, map, set, random, algorithm, memory, fstream, sstream, limits
 
 ## Notes
