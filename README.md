@@ -1,6 +1,6 @@
 # Employee Schedule Manager
 
-A scheduling application that manages employee shifts for a 7-day operation. The application allows employees to select their preferred shifts and generates a schedule that meets various requirements.
+A scheduling application that manages employee shifts for a 7-day operation. The application allows employees to select their preferred shifts and ensures fair distribution of work while maintaining minimum coverage requirements.
 
 ## Features
 
@@ -42,13 +42,22 @@ python scheduler.py
 
 ### C++ Implementation
 
-```bash
-# Compile the C++ version
-g++ -std=c++11 scheduler.cpp -o scheduler
+1. Requirements:
+   - C++17 compatible compiler (g++ or clang++)
+   - Standard C++ library
 
-# Run the C++ version
-./scheduler
-```
+2. Compile the application:
+   ```bash
+   g++ -std=c++17 scheduler.cpp -o scheduler
+   ```
+   or
+   ```bash
+   clang++ -std=c++17 scheduler.cpp -o scheduler
+   ```
+3. Run the application
+    ```bash
+      ./scheduler
+    ```
 
 ## Usage
 
