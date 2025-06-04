@@ -267,7 +267,7 @@ def main():
         if choice == "1":
             filename = input("Enter CSV filename (default: employee_schedule.csv): ").strip()
             if not filename:
-                filename = "employee_schedule.csv"
+                filename = "../employee_schedule.csv"
             if scheduler.load_from_csv(filename):
                 break
         elif choice == "2":

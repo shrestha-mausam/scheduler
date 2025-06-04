@@ -4,7 +4,7 @@ A scheduling application that manages employee shifts for a 7-day operation. The
 
 ## Features
 
-- Interactive command-line interface
+- Interactive GUI interface (Python) and command-line interface (C++)
 - Import employee preferences from CSV file
 - Manual entry of employee preferences
 - Automatic schedule generation with conflict resolution
@@ -13,16 +13,38 @@ A scheduling application that manages employee shifts for a 7-day operation. The
 - Maximum of five days per week per employee
 - Export generated schedule to CSV file
 
-## Input Format
+## Project Structure
+```
+scheduler/
+├── python/              # Python implementation
+│   ├── scheduler.py     # Core scheduling logic
+│   ├── scheduler_gui.py # GUI implementation
+│   └── requirements.txt # Python dependencies
+├── cpp/                 # C++ implementation
+│   └── scheduler.cpp    # C++ implementation
+├── test/               # Test files
+│   └── *.csv           # Test CSV files
+└── README.md           # This file
+```
 
-The application accepts employee preferences in two ways:
+## Python Implementation
 
-1. CSV File Import:
-   - File format: `employee_schedule.csv`
-   - No header required
-   - Each row represents one employee
-   - Columns: Name, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
-   - Shift codes: M (Morning), A (Afternoon), E (Evening), N (No Shift)
+### Requirements
+- Python 3.8 or higher
+- Tkinter (GUI library, comes with Python)
+
+### Installation
+
+1. Navigate to the Python implementation directory:
+```bash
+cd python
+```
+
+2. Create a virtual environment (recommended):
+```bash
+# On macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
 
 2. Manual Entry:
    - Interactive prompts for employee name and shift preferences
@@ -31,49 +53,89 @@ The application accepts employee preferences in two ways:
 
 ## Implementation
 
-The application is implemented in both Python and C++.
+### Running the Python Application
 
-### Python Implementation
-
+1. Start the GUI application:
 ```bash
-# Run the Python version
+python scheduler_gui.py
+```
+
+2. Or run the command-line version:
+```bash
 python scheduler.py
 ```
 
-### C++ Implementation
+## C++ Implementation
 
-1. Requirements:
-   - C++17 compatible compiler (g++ or clang++)
-   - Standard C++ library
+### Requirements
+- C++17 compatible compiler (g++ or clang++)
+- Standard C++ library
+
+### Compilation
+
+1. Navigate to the C++ implementation directory:
+```bash
+cd cpp
+```
 
 2. Compile the application:
-   ```bash
-   g++ -std=c++17 scheduler.cpp -o scheduler
-   ```
-   or
-   ```bash
-   clang++ -std=c++17 scheduler.cpp -o scheduler
-   ```
-3. Run the application
-    ```bash
-      ./scheduler
-    ```
+```bash
+# Using g++
+g++ -std=c++17 scheduler.cpp -o scheduler
+
+# Using clang++
+clang++ -std=c++17 scheduler.cpp -o scheduler
+```
+
+### Running the C++ Application
+
+1. Run the compiled executable:
+```bash
+# On macOS/Linux
+./scheduler
+
+# On Windows
+scheduler.exe
+```
 
 ## Usage
 
-1. Start the application
-2. Choose from the menu:
+### Python GUI Version
+1. Start the application using `python scheduler_gui.py`
+2. Use the menu or buttons to:
+   - Import schedule from CSV file
+   - Add employee preferences manually
+   - Generate schedule
+   - Save schedule to CSV file
+
+### Python Command-line Version
+1. Start the application using `python scheduler.py`
+2. Follow the interactive prompts to:
    - Import schedule from CSV file
    - Enter employee preferences manually
-   - Exit program
-3. If importing from CSV:
-   - Enter the filename (default: employee_schedule.csv)
-4. If entering manually:
-   - Enter employee name
-   - For each day, enter shift preference (M/A/E/N)
-   - Choose to add more employees or proceed
-5. The application will generate and display the schedule
-6. Option to save the generated schedule to a CSV file
+   - Generate and save schedule
+
+### C++ Version
+1. Start the application using `./scheduler`
+2. Follow the interactive prompts to:
+   - Import schedule from CSV file
+   - Enter employee preferences manually
+   - Generate and save schedule
+
+## Input Format
+
+The application accepts employee preferences in two ways:
+
+1. CSV File Import:
+   - File format: `employee_schedule.csv`
+   - Header required: Name, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+   - Each row represents one employee
+   - Shift codes: M (Morning), A (Afternoon), E (Evening), N (No Shift)
+
+2. Manual Entry:
+   - Interactive prompts for employee name and shift preferences
+   - Validates input for each day
+   - Allows adding multiple employees
 
 ## Test Cases
 
@@ -112,12 +174,12 @@ To run tests:
 # Python version
 python scheduler.py
 # When prompted, enter the path to the test file
-# Example: test/all_shifts_assigned.csv
+# Example: ../test/all_shifts_assigned.csv
 
 # C++ version
 ./scheduler
 # When prompted, enter the path to the test file
-# Example: test/all_shifts_assigned.csv
+# Example: ../test/all_shifts_assigned.csv
 ```
 
 ## Example CSV File
@@ -131,16 +193,6 @@ Carol,A,N,M,N,E,N,N
 David,E,N,N,M,A,N,N
 Emma,N,E,A,N,M,N,N
 ```
-
-## Requirements
-
-### Python Version
-- Python 3.6 or higher
-- Standard library modules: random, typing, dataclasses, enum, csv, os
-
-### C++ Version
-- C++17 or higher
-- Standard library headers: iostream, vector, string, map, set, random, algorithm, memory, fstream, sstream, limits
 
 ## Notes
 

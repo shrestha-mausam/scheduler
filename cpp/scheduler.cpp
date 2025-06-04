@@ -498,7 +498,7 @@ int main() {
             string filename;
             getline(cin, filename);
             if (filename.empty()) {
-                filename = "employee_schedule.csv";
+                filename = "../employee_schedule.csv";
             }
             if (scheduler.loadFromCSV(filename)) {
                 break;
